@@ -66,14 +66,19 @@ import { Image } from '@idimma/rn-widget';
 | \`bw\`     | \`number\`             | Border width                                             |
 | \`bc\`     | \`string\`             | Border color                                             |
 
+#### [Other View Props](./docs/View.md)
+
 ### Text Component
 
-| Prop      | Type                | Description                                              |
-|-----------|---------------------|----------------------------------------------------------|
-| \`color\` | \`string\`             | Text color                                               |
-| \`fs\`     | \`number\`             | Font size                                                |
-| \`fw\`    | \`'normal'\` \| \`'bold'\` \| \`number\` | Font weight                              |
-| \`align\` | \`'auto'\` \| \`'left'\` \| \`'right'\` \| \`'center'\` | Text alignment           |
+| Prop      | Type                | Description                                       |
+|-----------|---------------------|---------------------------------------------------|
+| \`color\` | \`string\`             | Text color      [See list of colors](./docs/Colors.md) |
+| \`fs\`     | \`number\`             | Font size                                         |
+| \`fw\`    | \`'normal'\` \| \`'bold'\` \| \`number\` | Font weight                                       |
+| \`align\` | \`'auto'\` \| \`'left'\` \| \`'right'\` \| \`'center'\` | Text alignment                                    |
+
+#### [Other Text Props](./docs/Text.md)
+
 
 ### Image Component
 
@@ -82,7 +87,7 @@ import { Image } from '@idimma/rn-widget';
 | \`source\`       | \`ImageSourcePropType\`| Source of the image (usually requires a path or URL)     |
 | \`resizeMode\`   | \`'cover'\` \| \`'contain'\` \| \`'stretch'\` | Resize mode for the image    |
 | \`style\`        | \`ImageStyle\`         | Custom styles for the image (e.g., width, height)        |
-
+#### [Other Image Props](./docs/Image.md)
 
 ## Contributing
 
