@@ -1,6 +1,6 @@
 {
   "name": "@idimma/rn-widget",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": false,
   "description": "react native components",
   "main": "src/widgets",
