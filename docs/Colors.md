@@ -143,7 +143,7 @@ import { Text } from '@idimma/rn-widget';
   blue
   fs={16}
   fw="bold"
-  center //Align text to center
+  center //Align Text to center
 >
   Hello, World!
 </Text>
@@ -180,7 +180,7 @@ import { Text } from '@idimma/rn-widget';
   cl_anyname
   fs={16}
   fw="bold"
-  center //Align text to center
+  center //Align Text to center
 >
   Hello, World!
 </Text>

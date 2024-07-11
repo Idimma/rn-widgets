@@ -34,7 +34,7 @@ import { Text } from '@idimma/rn-widget';
   //You can use any color as prop black, red, pink ...etc
   fs={16}
   fw="bold"
-  center //Align text to center
+  center //Align Text to center
 >
   Hello, World!
 </Text>
