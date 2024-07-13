@@ -2,11 +2,21 @@
   "name": "@idimma/rn-widget",
   "version": "0.1.3",
   "description": "react native components",
-  "main": "src/widgets",
-  "react-native": "src/widgets",
-  "source": "src/widgets",
+  "main": "lib/commonjs",
+  "module": "lib/module",
+  "types": "lib/typescript/src/index.d.ts",
+  "react-native": "src",
+  "source": "src",
+  "exports": {
+    ".": {
+      "types": "./lib/typescript/src/index.d.ts",
+      "import": "./lib/module/index.js",
+      "require": "./lib/commonjs/index.js"
+    }
+  },
   "files": [
     "src",
+    "lib",
     "android",
     "ios",
     "cpp",
@@ -149,8 +159,18 @@
     "source": "src",
     "output": "lib",
     "targets": [
-      "commonjs",
-      "module",
+      [
+        "commonjs",
+        {
+          "esm": true
+        }
+      ],
+      [
+        "module",
+        {
+          "esm": true
+        }
+      ],
       [
         "typescript",
         {
@@ -171,5 +191,9 @@
   },
   "directories": {
     "example": "example"
+  },
+  "create-react-native-library": {
+    "type": "library",
+    "version": "0.38.1"
   }
 }

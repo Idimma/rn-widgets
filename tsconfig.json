@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "@idimma/widget": ["./src/widgets"]
+      "@idimma/widget": ["./lib/commonjs"]
     },
     "allowUnreachableCode": true,
     "allowUnusedLabels": true,

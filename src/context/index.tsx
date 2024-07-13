@@ -2,6 +2,9 @@ import React, { createContext, useContext } from 'react';
 import { DarkTheme, FontFamily, LightTheme, Shadow, ThemeColorsType } from '../helper/@types';
 import { fontFamily, lightTheme, darkTheme, shadow, THEME_COLORS } from '../helper';
 
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
+
 interface RnStyleProps {
   fontFamily?: FontFamily,
   shadow?: Shadow;
@@ -19,6 +22,8 @@ interface IRnWidgetsProps extends RnStyleProps {
 
 const RnWidgetContext: React.Context<RnStyleProps> = createContext({} as RnStyleProps);
 
+const styleSafeAreaProvider = StyleSheet.flatten({flex:1})
+
 const RnWidgetContextProvider =
   ({
      children,
@@ -29,15 +34,17 @@ const RnWidgetContextProvider =
      theme = 'light',
    }: IRnWidgetsProps) => {
     return (
-      <RnWidgetContext.Provider value={{
-        fontFamily,
-        shadow,
-        theme,
-        lightTheme,
-        darkTheme,
-      }}>
-        {children}
-      </RnWidgetContext.Provider>
+      <SafeAreaProvider style={styleSafeAreaProvider}>
+        <RnWidgetContext.Provider value={{
+          fontFamily,
+          shadow,
+          theme,
+          lightTheme,
+          darkTheme,
+        }}>
+          {children}
+        </RnWidgetContext.Provider>
+      </SafeAreaProvider>
     );
   };
 
