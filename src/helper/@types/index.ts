@@ -496,6 +496,10 @@ export interface IViewStyleProp
   my?: DimensionValue;
   mx?: DimensionValue;
 
+  gap?: ViewStyle['gap'];
+  columnGap?: ViewStyle['columnGap'];
+  rowGap?: ViewStyle['rowGap'];
+
   /**
    * @param dw Device Width expressed as a percentage of screen width
    *  Example: If dw is 50, the width will be set to 50% of the screen width.

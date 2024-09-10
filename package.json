@@ -1,17 +1,18 @@
 {
   "name": "@idimma/rn-widget",
-  "version": "0.1.4",
-  "description": "react native components",
+  "version": "0.1.4112",
+  "description": "React Native components",
   "main": "lib/commonjs",
   "module": "lib/module",
   "types": "lib/typescript/src/index.d.ts",
-  "react-native": "src",
+  "react-native": "./lib/module/index.js",
   "source": "src",
   "exports": {
     ".": {
       "types": "./lib/typescript/src/index.d.ts",
       "import": "./lib/module/index.js",
-      "require": "./lib/commonjs/index.js"
+      "require": "./lib/commonjs/index.js",
+      "react-native": "./lib/module/index.js"
     }
   },
   "files": [
@@ -29,7 +30,10 @@
     "!**/__tests__",
     "!**/__fixtures__",
     "!**/__mocks__",
-    "!**/.*"
+    "!**/*.spec.*",
+    "!**/*.test.*",
+    "!example",
+    "!node_modules"
   ],
   "scripts": {
     "example": "yarn workspace @idimma/widget-example",
@@ -190,7 +194,6 @@
     ]
   },
   "dependencies": {
-
   },
   "directories": {
     "example": "example"

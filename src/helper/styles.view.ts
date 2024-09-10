@@ -122,6 +122,11 @@ export const viewStyler = (
   if (isNumber(props.left)) styles.left = props.left;
   if (isNumber(props.right)) styles.right = props.right;
 
+
+  if (isNumber(props.gap)) styles.gap = props.gap;
+  if (isNumber(props.rowGap)) styles.rowGap = props.rowGap;
+  if (isNumber(props.columnGap)) styles.columnGap = props.columnGap;
+
   if (props.bs) styles.borderStyle = props.bs;
   if (props.bc) styles.borderColor = props.bc;
   if (props.radius) styles.borderRadius = ms(props.radius);
