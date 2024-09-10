@@ -1,10 +1,17 @@
 import { Animation, CustomAnimation, Direction, Easing, View as AnimatedView } from 'react-native-animatable';
 import { viewStyler } from '../helper/styles.view';
 import { LinearGradient, LinearGradientProps } from 'expo-linear-gradient';
-import { RefreshControl, ScrollView, ScrollViewProps, StyleSheet, View as RNView, ViewStyle } from 'react-native';
+import {
+  RefreshControl,
+  ScrollView,
+  ScrollViewProps,
+  StyleSheet,
+  View as RNView,
+  ViewStyle,
+} from 'react-native';
 import { SafeAreaView, SafeAreaViewProps } from 'react-native-safe-area-context';
 
-import React, { useMemo } from 'react';
+import React, { LegacyRef, useMemo } from 'react';
 
 import { intersection } from 'lodash';
 import { THEME_COLORS } from '../helper';
@@ -16,6 +23,7 @@ interface IView extends IViewProps, IViewStyleProp, SafeAreaViewProps {
   flex?: number | boolean | undefined;
   animated?: boolean;
   hide?: boolean;
+  ref?: LegacyRef<RNView> | undefined;
   safe?: boolean;
   gradient?: boolean;
   isLoading?: boolean;
@@ -157,7 +165,7 @@ const View = ({
       </LinearGradient>
     );
   }
-  const child = (<RNView {...fixedProp} style={viewStyler(props, props?.style)} />);
+  const child = (<RNView ref={props.ref}  {...fixedProp} style={viewStyler(props, props?.style)} />);
   if (scroll) {
     const refresh = {} as ScrollViewProps;
     if (Object.prototype.hasOwnProperty.call(props, 'fetchRequest')) {

@@ -476,6 +476,7 @@ export interface IViewStyleProp
 
   fill?: boolean;
   overflow?: boolean;
+  relative?: boolean;
 
   color?: ColorValue;
   bg?: ColorValue;

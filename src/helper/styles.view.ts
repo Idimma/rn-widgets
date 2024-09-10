@@ -95,6 +95,8 @@ export const viewStyler = (
   if (props.selfEnd) styles.alignSelf = 'flex-end';
   if (props.selfStart) styles.alignSelf = 'flex-start';
   if (props.selfCenter) styles.alignSelf = 'center';
+  if (props.relative)  styles.position = 'relative';
+
   if (props.absolute || props.inset) {
     styles.position = 'absolute';
     if (props.fill || props.inset) {
