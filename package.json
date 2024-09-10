@@ -97,7 +97,6 @@
   },
   "peerDependencies": {
     "@types/react": "*",
-    "@types/react-native": "*",
     "react": "*",
     "react-dom": "*",
     "react-native": "*",
