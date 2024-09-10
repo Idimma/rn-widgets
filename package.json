@@ -1,6 +1,6 @@
 {
   "name": "@idimma/rn-widget",
-  "version": "0.1.4112",
+  "version": "0.1.42",
   "description": "React Native components",
   "main": "lib/commonjs",
   "module": "lib/module",
