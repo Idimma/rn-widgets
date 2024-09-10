@@ -1,17 +1,10 @@
 import { Animation, CustomAnimation, Direction, Easing, View as AnimatedView } from 'react-native-animatable';
 import { viewStyler } from '../helper/styles.view';
 import { LinearGradient, LinearGradientProps } from 'expo-linear-gradient';
-import {
-  RefreshControl,
-  ScrollView,
-  ScrollViewProps,
-  StyleSheet,
-  View as RNView,
-  ViewStyle,
-} from 'react-native';
+import { RefreshControl, ScrollView, ScrollViewProps, StyleSheet, View as RNView, ViewStyle } from 'react-native';
 import { SafeAreaView, SafeAreaViewProps } from 'react-native-safe-area-context';
 
-import React, { LegacyRef, useMemo } from 'react';
+import React, { forwardRef, LegacyRef, useMemo } from 'react';
 
 import { intersection } from 'lodash';
 import { THEME_COLORS } from '../helper';
@@ -25,6 +18,7 @@ interface IView extends IViewProps, IViewStyleProp, SafeAreaViewProps {
   hide?: boolean;
   ref?: LegacyRef<RNView> | undefined;
   safe?: boolean;
+  useNativeDriver?: boolean;
   gradient?: boolean;
   isLoading?: boolean;
   show?: boolean;
@@ -46,23 +40,24 @@ interface IView extends IViewProps, IViewStyleProp, SafeAreaViewProps {
   style?: ViewStyle | undefined;
 }
 
-const View = ({
-                edges = ['top'],
-                animated,
-                animation: ani,
-                wrapperStyle = {},
-                infinite,
-                scroll,
-                scrollProps,
-                safe,
-                hide = false,
-                show,
-                gradient,
-                gradientColors = [THEME_COLORS.primary, THEME_COLORS.secondary],
-                easing = 'ease-out',
-                iterationCount = 1,
-                ...props
-              }: IView) => {
+const View = forwardRef<RNView, IView>(({
+                           edges = ['top'],
+                           animated,
+                           animation: ani,
+                           wrapperStyle = {},
+                           infinite,
+                           scroll,
+                           scrollProps,
+                           safe,
+                           hide = false,
+                           useNativeDriver = true,
+                           show,
+                           gradient,
+                           gradientColors = [THEME_COLORS.primary, THEME_COLORS.secondary],
+                           easing = 'ease-out',
+                           iterationCount = 1,
+                           ...props
+                         }: IView, ref: any) => {
 
   const animations = useMemo(
     () => [
@@ -141,7 +136,8 @@ const View = ({
       ani || intersection(Object.keys(fixedProp), animations)[0] || undefined;
     return (
       <AnimatedView
-        useNativeDriver
+        ref={ref}
+        useNativeDriver={useNativeDriver}
         animation={animation}
         easing={easing}
         iterationCount={infinite ? 'infinite' : iterationCount}
@@ -165,7 +161,7 @@ const View = ({
       </LinearGradient>
     );
   }
-  const child = (<RNView ref={props.ref}  {...fixedProp} style={viewStyler(props, props?.style)} />);
+  const child = (<RNView ref={ref}  {...fixedProp} style={viewStyler(props, props?.style)} />);
   if (scroll) {
     const refresh = {} as ScrollViewProps;
     if (Object.prototype.hasOwnProperty.call(props, 'fetchRequest')) {
@@ -201,5 +197,9 @@ const View = ({
     );
 
   return child;
-};
+});
+
+// Set display name for the component
+View.displayName = 'View';
+
 export default View;
