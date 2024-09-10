@@ -1,6 +1,6 @@
 {
   "name": "@idimma/rn-widget",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "react native components",
   "main": "lib/commonjs",
   "module": "lib/module",
@@ -15,7 +15,6 @@
     }
   },
   "files": [
-    "src",
     "lib",
     "android",
     "ios",
@@ -102,7 +101,7 @@
     "react": "*",
     "react-dom": "*",
     "react-native": "*",
-    "react-native-safe-area-context": "*",
+    "react-native-safe-area-context": "*"
   },
   "workspaces": [
     "example"
