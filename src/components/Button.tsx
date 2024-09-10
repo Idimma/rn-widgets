@@ -51,7 +51,7 @@ const Button = ({
       onPress={onPress}
       radius={8}
       center
-      py={17}
+      py={15}
       style={btnSty}
       {...props}
     >

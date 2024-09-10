@@ -11,6 +11,7 @@ export {
   default as Touch,
   default as TouchOpacity,
   default as Pressable,
+  default as Press,
   default as TouchableOpacity,
 } from './components/Touch';
 export { default as Button } from './components/Button';
