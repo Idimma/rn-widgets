@@ -89,6 +89,7 @@ export const viewStyler = (
   if (props.evenly) styles.justifyContent = 'space-evenly';
 
   if (props.justified) styles.justifyContent = 'center';
+  if (props.justify) styles.justifyContent = props.justify;
   if (props.contentEnd) styles.justifyContent = 'flex-end';
   if (props.contentStart) styles.justifyContent = 'flex-start';
   if (props.aligned) styles.alignItems = 'center';

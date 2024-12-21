@@ -7,6 +7,13 @@ react native components
 ```sh
 npm install @idimma/rn-widget
 ```
+[![NPM Total Downloads](https://img.shields.io/npm/dt/@idimma/rn-widget.svg?style=flat-square&label=Total+Downloads)](https://www.npmjs.com/package/@idimma/rn-widget)
+[![npm Latest Package](https://img.shields.io/npm/v/@idimma/rn-widget/latest.svg)](https://www.npmjs.com/package/@idimma/rn-widget)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/idimma/rn-widgets/blob/main/LICENSE)
+[![Follow on Twitter](https://img.shields.io/twitter/follow/idimmanuel.svg?label=follow+idimmanuel)](https://x.com/idimmanuel)
+[![Github Stars](https://img.shields.io/github/stars/idimma/rn-widgets)](https://github.com/idimma/rn-widgets/stargazers)
+
+[//]: # ([![npm downloads]&#40;https://img.shields.io/npm/dm/@idimma/rn-widget.svg&#41;]&#40;https://npm-stat.com/charts.html?package=@idimma/rn-widgets&#41;)
 
 ## Usage
 

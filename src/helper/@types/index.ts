@@ -1,5 +1,6 @@
 import React, { ReactElement, ReactNode } from 'react';
 import {
+  AnimatableNumericValue,
   ColorValue,
   DimensionValue,
   ScrollViewProps,
@@ -8,6 +9,7 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native';
+import { FlexStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
 export interface TextFieldType extends TextInputProps {
   renderLeftComponent?: () => void | null | undefined | ReactNode;
@@ -431,7 +433,8 @@ export interface IViewStyleProp
     ViewProps,
     ColorBooleanType {
   end?: boolean;
-  justify?: boolean;
+  justify?: FlexStyle['justifyContent'];
+
   justified?: boolean;
   central?: boolean;
   row?: boolean;
@@ -481,8 +484,8 @@ export interface IViewStyleProp
   color?: ColorValue;
   bg?: ColorValue;
   flex?: boolean | number;
-  opacity?: number;
-  pl?: DimensionValue;
+  opacity?: AnimatableNumericValue;
+  pl?: ViewStyle['paddingLeft'];
   p?: DimensionValue;
   pt?: DimensionValue;
   pr?: DimensionValue;
@@ -513,7 +516,7 @@ export interface IViewStyleProp
    */
   dh?: number;
 
-  w?: DimensionValue | boolean;
+  w?: ViewStyle['width'] | boolean;
   h?: DimensionValue | boolean;
   lh?: number;
   ls?: number;

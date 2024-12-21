@@ -161,7 +161,7 @@ const View = forwardRef<RNView, IView>(({
       </LinearGradient>
     );
   }
-  const child = (<RNView ref={ref}  {...fixedProp} style={viewStyler(props, props?.style)} />);
+  const child = (<RNView ref={ref} {...fixedProp} style={viewStyler(props, props?.style)} />);
   if (scroll) {
     const refresh = {} as ScrollViewProps;
     if (Object.prototype.hasOwnProperty.call(props, 'fetchRequest')) {
