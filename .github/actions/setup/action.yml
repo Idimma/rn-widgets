@@ -1,5 +1,11 @@
 name: Setup
-description: Setup Node.js and install dependencies
+description: "Reusable action for setting up Node.js and installing dependencies"
+
+inputs:
+  node-version-file:
+    description: "File specifying the Node.js version"
+    required: false
+    default: ".nvmrc"
 
 runs:
   using: composite
@@ -7,7 +13,7 @@ runs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version-file: .nvmrc
+        node-version-file: ${{ inputs.node-version-file }}
 
     - name: Cache dependencies
       id: yarn-cache
