@@ -1,4 +1,3 @@
-import React, { ReactElement, ReactNode } from 'react';
 import {
   AnimatableNumericValue,
   ColorValue,
@@ -9,6 +8,8 @@ import {
   ViewProps,
   ViewStyle,
 } from 'react-native';
+import React, { ReactElement, ReactNode } from 'react';
+
 import { FlexStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
 
 export interface TextFieldType extends TextInputProps {
@@ -428,10 +429,7 @@ interface IBooleanProps {
   inset?: boolean;
 }
 
-export interface IViewStyleProp
-  extends IBooleanProps,
-    ViewProps,
-    ColorBooleanType {
+export interface IViewStyleProp extends IBooleanProps, ViewProps, ColorBooleanType {
   end?: boolean;
   justify?: FlexStyle['justifyContent'];
 

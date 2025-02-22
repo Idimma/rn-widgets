@@ -1,6 +1,6 @@
 {
   "name": "@idimma/rn-widget",
-  "version": "0.1.424",
+  "version": "0.1.425-c",
   "description": "React Native components",
   "main": "lib/module",
   "module": "lib/module",
@@ -98,9 +98,8 @@
     "@types/react": "^18.2.44"
   },
   "peerDependencies": {
-    "@types/react": "*",
     "react": "*",
-    "react-dom": "*",
+    "@types/react": "*",
     "react-native": "*",
     "react-native-safe-area-context": "*"
   },

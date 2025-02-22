@@ -1,4 +1,4 @@
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, ViewStyle } from 'react-native';
 import React from 'react';
 import Text from './Text';
 import Touch from './Touch';
@@ -16,38 +16,40 @@ const styles = StyleSheet.create({
   },
 });
 
+
+interface EmptyProps {
+  text?: string;
+  onRefresh?: () => void;
+  showEmptyLoader?: boolean;
+  wrapperStyle?: ViewStyle;
+  iconProps?: {
+    type?: string,
+    name?: string,
+    fs?: number,
+    mb?: number,
+  };
+}
+
 const Empty = ({
-  hideText,
-  text,
-  onRefresh,
-  showEmptyLoader,
-  wrapperStyle,
-}: never) => (
+                 text = 'No data found...',
+                 onRefresh,
+                 showEmptyLoader,
+                 wrapperStyle,
+                 iconProps = {
+                   type: 'FontAwesome5',
+                   name: 'list-ol',
+                   fs: 70,
+                 },
+               }: EmptyProps) => (
   <View style={StyleSheet.flatten([styles.container, wrapperStyle])}>
-    <Icon type={'FontAwesome5'} name="list-ol" fs={70} mb={20} />
-    {!hideText ? (
-      <Text bold mb={10}>
-        {text || 'No data found...'}
-      </Text>
-    ) : null}
-    {showEmptyLoader && (
-      <View>
-        <ActivityIndicator color={THEME_COLORS.primary} />
-      </View>
-    )}
+    <Icon {...iconProps} />
+
+    {text ? <Text bold mb={10}>{text}</Text> : null}
+    {showEmptyLoader && <ActivityIndicator color={THEME_COLORS.primary} />}
+
     {onRefresh && (
-      <Touch
-        primary
-        h={48}
-        central
-        px={40}
-        onPress={onRefresh}
-        radius={10}
-        mt={10}
-      >
-        <Text white bold fs={14}>
-          Reload
-        </Text>
+      <Touch primary h={48} central onPress={onRefresh} radius={10} mt={10}>
+        <Text white bold fs={14}>Reload</Text>
       </Touch>
     )}
   </View>
