@@ -73,18 +73,18 @@ import { Image } from '@idimma/rn-widget';
 | \`bw\`     | \`number\`             | Border width                                             |
 | \`bc\`     | \`string\`             | Border color                                             |
 
-#### [Other View Props](./docs/view)
+#### [Other View Props](./docs/View.md)
 
 ### Text Component
 
 | Prop      | Type                | Description                                       |
 |-----------|---------------------|---------------------------------------------------|
-| \`color\` | \`string\`             | Text color      [See list of colors](./docs/colors) |
+| \`color\` | \`string\`             | Text color      [See list of colors](./docs/Colors.md) |
 | \`fs\`     | \`number\`             | Font size                                         |
 | \`fw\`    | \`'normal'\` \| \`'bold'\` \| \`number\` | Font weight                                       |
 | \`align\` | \`'auto'\` \| \`'left'\` \| \`'right'\` \| \`'center'\` | Text alignment                                    |
 
-#### [Other Text Props](./docs/text)
+#### [Other Text Props](./docs/Text.md)
 
 
 ### Image Component
