@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, ReactElement } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import Text from './Text';
 import { scale } from 'react-native-size-matters';
+
+// Define interface for tab child props
+interface TabChildProps {
+  label: string;
+  children?: React.ReactNode;
+}
 
 const styles = StyleSheet.create({
   tabHeader: {
@@ -31,24 +37,30 @@ const styles = StyleSheet.create({
 
 const Tabs: React.FC<{
   selectedTab: number;
-  children: React.ReactElement[];
+  children: ReactElement<TabChildProps>[];
 }> = ({ children, selectedTab = 0 }) => {
   const [currentTab, setCurrentTab] = useState(selectedTab);
 
   const renderTabHeader = () =>
-    React.Children.map(children, (child, index) => (
-      <TouchableOpacity
-        style={styles.tabItem}
-        onPress={() => setCurrentTab(index)}
-      >
-        <View style={styles.tabContent}>
-          <Text ff={currentTab === index ? 'medium' : 'regular'} color="white">
-            {child.props.label}
-          </Text>
-          {currentTab === index && <View style={styles.selectedTab} />}
-        </View>
-      </TouchableOpacity>
-    ));
+    React.Children.map(children, (child, index) => {
+      // Ensure child is a valid React element with props
+      if (React.isValidElement<TabChildProps>(child)) {
+        return (
+          <TouchableOpacity
+            style={styles.tabItem}
+            onPress={() => setCurrentTab(index)}
+          >
+            <View style={styles.tabContent}>
+              <Text ff={currentTab === index ? 'medium' : 'regular'} color="white">
+                {child.props.label}
+              </Text>
+              {currentTab === index && <View style={styles.selectedTab} />}
+            </View>
+          </TouchableOpacity>
+        );
+      }
+      return null;
+    });
 
   return (
     <>

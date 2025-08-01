@@ -1,4 +1,10 @@
 {
   "extends": "./tsconfig",
-  "exclude": ["example"]
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "lib/typescript"
+  },
+  "exclude": ["example", "node_modules", "**/__tests__", "**/__fixtures__", "**/__mocks__"]
 }

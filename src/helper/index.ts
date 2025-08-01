@@ -170,7 +170,7 @@ export const THEME_COLORS: ThemeColorsType = {
   xanadu: '#738678',
   yaleBlue: '#0F4D92',
   yellow: '#F4A261',
-  zinnia: '#FFB300',
+  zinnia: '#FF9966',
   ...lightTheme,
 };
 
