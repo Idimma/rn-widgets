@@ -1,4 +1,4 @@
-import { StyleSheet, TextInput as RNTextInput, TextStyle } from 'react-native';
+import { StyleSheet, TextInput as RNTextInput } from 'react-native';
 import React, { useRef, useState } from 'react';
 
 import Feather from '@expo/vector-icons/Feather';
@@ -227,7 +227,7 @@ const TextField = ({
         )}
       </View>
       <View hide={!(!hideError && error)} p={1}>
-        <Text danger mt={5} fs={10} style={[errorStyle] as TextStyle}>
+        <Text danger mt={5} fs={10} style={errorStyle || undefined}>
           {error}
         </Text>
       </View>

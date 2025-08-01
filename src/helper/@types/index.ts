@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import React, { ReactElement, ReactNode } from 'react';
 
-import { FlexStyle } from 'react-native/Libraries/StyleSheet/StyleSheetTypes';
+// Using FlexStyle from react-native instead of internal library
+import { FlexStyle } from 'react-native';
 
 export interface TextFieldType extends TextInputProps {
   renderLeftComponent?: () => void | null | undefined | ReactNode;
@@ -281,7 +282,7 @@ export interface ThemeColorsType {
   xanadu: '#738678';
   yaleBlue: '#0F4D92';
   yellow: '#F4A261';
-  zinnia: ColorValue;
+  zinnia: string;
 
   [key: `_${string}`]: ColorValue;
 }

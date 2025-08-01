@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
     "rootDir": ".",
+    "baseUrl": ".",
     "paths": {
-      "@idimma/widget": ["./lib/commonjs"]
+      "@idimma/widget": ["./lib/typescript"]
     },
     "allowUnreachableCode": true,
     "allowUnusedLabels": true,
