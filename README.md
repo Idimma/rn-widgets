@@ -202,7 +202,12 @@ import { Tabs } from '@idimma/rn-widget';
 
 ## Recent Updates
 
-### Version 0.1.5+
+### Version 0.1.7
+- Fixed GitHub Actions workflow by switching from Yarn to npm
+- Resolved CI pipeline issues with missing Yarn binary
+- Updated cache configuration to use package-lock.json
+
+### Version 0.1.6
 - Fixed TypeScript compilation errors
 - Improved build configuration
 - Added comprehensive type declarations
