@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [0.1.7] - 2025-08-03
+
+### Fixed
+- Fixed GitHub Actions workflow by switching from Yarn to npm:
+  - Updated cache configuration to use package-lock.json
+  - Changed all Yarn commands to npm equivalents
+  - Resolved the missing Yarn binary issue in CI pipeline
+
 ## [0.1.6] - 2025-08-01
 
 ### Changed
