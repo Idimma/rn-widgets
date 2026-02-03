@@ -1,9 +1,21 @@
-import { intersection, isBoolean, isNumber, isString, keys } from 'lodash';
 import { StyleSheet, ViewStyle } from 'react-native';
-import { ms } from 'react-native-size-matters';
 import { DHR, DWR, IS_IOS } from './index';
 import { IViewStyleProp, Shadow, ThemeColorsType } from './@types';
 import { useRnWidgetContext } from '../context';
+import { tryRequire } from './platform';
+
+// Optional: react-native-size-matters for responsive scaling
+const SizeMatters = tryRequire<typeof import('react-native-size-matters')>('react-native-size-matters');
+const ms = SizeMatters.available && SizeMatters.module
+  ? SizeMatters.module.ms
+  : (size: number) => size;
+
+// Native JavaScript replacements for lodash
+const isBoolean = (v: unknown): v is boolean => typeof v === 'boolean';
+const isNumber = (v: unknown): v is number => typeof v === 'number' && !isNaN(v);
+const isString = (v: unknown): v is string => typeof v === 'string';
+const keys = Object.keys;
+const intersection = <T>(a: T[], b: T[]): T[] => a.filter((x) => b.includes(x));
 
 const VIEW_STYLE_MAP: Record<string, string> = {
   p: 'padding',
@@ -28,11 +40,9 @@ const VIEW_STYLE_MAP: Record<string, string> = {
   borderRadius: 'borderRadius',
   bw: 'borderWidth',
   bc: 'borderColor',
-
   align: 'alignItems',
   justify: 'justifyContent',
   color: 'backgroundColor',
-
   shadowColor: 'shadowColor',
   shadowOffset: 'shadowOffset',
   shadowOpacity: 'shadowOpacity',
@@ -43,40 +53,38 @@ type ViewStyleMapKeys = keyof typeof VIEW_STYLE_MAP;
 
 export const viewStyler = (
   props: IViewStyleProp,
-  custom?: ViewStyle,
+  custom?: ViewStyle
 ) => {
-
   const THEME_COLORS = useRnWidgetContext('colors') as ThemeColorsType;
   const SHADOWS = useRnWidgetContext('shadow') as Shadow;
-  // const FONT_FAMILY = useRnWidgetContext<'fontFamily'>('fontFamily', COLORS) ;
-
 
   let styles: ViewStyle = {
     backgroundColor: 'transparent',
   };
+
   keys(props).forEach((key: ViewStyleMapKeys) => {
     if (Object.prototype.hasOwnProperty.call(VIEW_STYLE_MAP, key)) {
-
       styles = {
-        ...styles as object,
+        ...styles,
         [VIEW_STYLE_MAP[key] as string]: props[key as keyof IViewStyleProp],
       } as ViewStyle;
-
     }
   });
 
   if (props.row) styles.flexDirection = 'row';
   if (props.column) styles.flexDirection = 'column';
   if (props.rowReverse) styles.flexDirection = 'row-reverse';
-  if (props.columnReverse) styles['flexDirection'] = 'column-reverse';
+  if (props.columnReverse) styles.flexDirection = 'column-reverse';
   if (props.transform) styles.transform = props.transform;
+
   if (props.flex) {
     styles.flex = isNumber(props.flex) ? props.flex : 1;
   }
+
   if (props.dh) styles.height = DHR(props.dh);
   if (props.dw) styles.width = DWR(props.dw);
-  if (props.h) styles.height = props.h as number || '100%';
-  if (props.w) styles.width = props.w as number || '100%';
+  if (props.h) styles.height = (props.h as number) || '100%';
+  if (props.w) styles.width = (props.w as number) || '100%';
 
   if (props.selfEnd) styles.alignSelf = 'flex-end';
   if (props.center || props.central) {
@@ -96,7 +104,7 @@ export const viewStyler = (
   if (props.selfEnd) styles.alignSelf = 'flex-end';
   if (props.selfStart) styles.alignSelf = 'flex-start';
   if (props.selfCenter) styles.alignSelf = 'center';
-  if (props.relative)  styles.position = 'relative';
+  if (props.relative) styles.position = 'relative';
 
   if (props.absolute || props.inset) {
     styles.position = 'absolute';
@@ -104,6 +112,7 @@ export const viewStyler = (
       styles = { ...styles, top: 0, bottom: 0, right: 0, left: 0 };
     }
   }
+
   if (props.disabled) styles.opacity = 0.4;
 
   if (props.shadow) {
@@ -124,7 +133,6 @@ export const viewStyler = (
   if (isNumber(props.bottom)) styles.bottom = props.bottom;
   if (isNumber(props.left)) styles.left = props.left;
   if (isNumber(props.right)) styles.right = props.right;
-
 
   if (isNumber(props.gap)) styles.gap = props.gap;
   if (isNumber(props.rowGap)) styles.rowGap = props.rowGap;
@@ -153,14 +161,22 @@ export const viewStyler = (
     styles.borderBottomColor = isString(props.hr) ? props.hr : '#BDBDBD';
     styles.borderBottomWidth = 1;
   }
-  styles.backgroundColor =
-    THEME_COLORS[intersection(Object.keys(props), Object.keys(THEME_COLORS))[0] as keyof typeof THEME_COLORS]
-    || styles.backgroundColor;
+
+  // Determine background color from boolean color props
+  const colorKey = intersection(
+    Object.keys(props),
+    Object.keys(THEME_COLORS)
+  )[0] as keyof ThemeColorsType | undefined;
+
+  if (colorKey) {
+    styles.backgroundColor = THEME_COLORS[colorKey];
+  }
+
   if (isBoolean(props.outline)) {
     styles.borderColor = styles.backgroundColor;
     styles.backgroundColor = 'transparent';
     styles.borderWidth = 0.9;
   }
+
   return StyleSheet.flatten([styles, custom]);
 };
-

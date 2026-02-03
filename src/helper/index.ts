@@ -1,15 +1,20 @@
 import { Dimensions, PixelRatio, Platform, StatusBar, StyleSheet } from 'react-native';
-
-import { scale } from 'react-native-size-matters';
 import styles from './data/styles.json';
-
 import { ThemeColorsType } from './@types';
+import { tryRequire } from './platform';
+
+// Optional: react-native-size-matters for responsive scaling
+const SizeMatters = tryRequire<typeof import('react-native-size-matters')>('react-native-size-matters');
+const scale = SizeMatters.available && SizeMatters.module
+  ? SizeMatters.module.scale
+  : (size: number) => size;
 
 export const IS_ANDROID = Platform.OS === 'android';
 export const IS_IOS = Platform.OS === 'ios';
 export const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } =
   Dimensions.get('window');
 export const hairline = StyleSheet.hairlineWidth;
+
 export const Dimension = {
   LABEL: 12,
   TITLE: 24,
@@ -39,23 +44,27 @@ export function isIphoneX() {
 
 export const getScreenHeight = () => SCREEN_HEIGHT;
 export const getScreenWidth = () => SCREEN_WIDTH;
+
 export const ifIphoneX = (iphoneXStyle: number, regularStyle: number) =>
   isIphoneX() ? iphoneXStyle : regularStyle;
+
 export const getStatusBarHeight = () => {
   const INNER_STATUS_BAR_HEIGHT = isIphoneX() ? 44 : 20;
   return IS_IOS ? INNER_STATUS_BAR_HEIGHT : 0;
 };
+
 export const getHeaderHeight = () => {
   const INNER_HEADER_HEIGHT = isIphoneX() ? 98 : 74;
   return IS_IOS ? INNER_HEADER_HEIGHT : 56;
 };
+
 export const headerTopPad = ifIphoneX(scale(46), scale(40));
 export const getNavBarHeight = () => getHeaderHeight() - getStatusBarHeight();
 
 export function resizeFont(dp: number) {
-  // @ts-ignore
+  // Use font scale ratio to adjust font size
   const ratio = PixelRatio.getFontScale();
-  return designHeightRatio(dp) + 2;
+  return designHeightRatio(dp) * ratio + 2;
 }
 
 export const designHeightRatio = (px = 812) =>
@@ -64,7 +73,6 @@ export const designWidthRatio = (px = 375) =>
   Math.round(SCREEN_WIDTH * (px / 375));
 export const DHR = designHeightRatio;
 export const DWR = designWidthRatio;
-
 
 export const {
   fontFamily,
@@ -174,13 +182,12 @@ export const THEME_COLORS: ThemeColorsType = {
   ...lightTheme,
 };
 
-
 type AnyObject = {
   [key: string]: any;
 };
 
 export const mergeObjects = <T extends AnyObject, U extends AnyObject>(obj1: T, obj2: U): T & U => {
-  const merged = { ...obj1 } as T & U; // Start with a shallow copy of obj1
+  const merged = { ...obj1 } as T & U;
   for (const key in obj2) {
     if (Array.isArray(obj2[key]) && Array.isArray(merged[key])) {
       merged[key] = [...new Set([...merged[key], ...obj2[key]])] as any;

@@ -1,15 +1,20 @@
-import { StyleSheet, TextInput as RNTextInput } from 'react-native';
-import React, { useRef, useState } from 'react';
+import { StyleSheet, TextInput as RNTextInput, TextInputProps, ViewStyle } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
 
-import Feather from '@expo/vector-icons/Feather';
-// @ts-ignore
+import Icon from './Icon';
 import Select from './Select';
 import Text from './Text';
 import Touch from './Touch';
 import View from './View';
-import { scale } from 'react-native-size-matters';
 import { TextFieldType } from '../helper/@types';
 import { THEME_COLORS } from '../helper';
+import { tryRequire } from '../helper/platform';
+
+// Optional: react-native-size-matters for responsive scaling
+const SizeMatters = tryRequire<typeof import('react-native-size-matters')>('react-native-size-matters');
+const scale = SizeMatters.available && SizeMatters.module
+  ? SizeMatters.module.scale
+  : (size: number) => size; // Fallback: no scaling
 
 const styles = StyleSheet.create({
   inputContainer: {
@@ -28,7 +33,6 @@ const styles = StyleSheet.create({
     fontFamily: 'regular',
     color: '#67748E',
     paddingHorizontal: 15,
-    //2998877654
   },
   disabled: {
     color: THEME_COLORS.gray,
@@ -64,54 +68,122 @@ const styles = StyleSheet.create({
   },
 });
 
+/**
+ * TextField component with optional select mode
+ *
+ * @example
+ * <TextField
+ *   label="Email"
+ *   email
+ *   value={email}
+ *   onChangeText={setEmail}
+ *   error={emailError}
+ * />
+ *
+ * @example
+ * <TextField
+ *   label="Password"
+ *   secureTextEntry
+ *   value={password}
+ *   onChangeText={setPassword}
+ * />
+ */
 const TextField = ({
-                     renderLeftComponent,
-                     onChangeText = () => null,
-                     onChange = () => null,
-                     email = false,
-                     numbers = false,
-                     phone = false,
-                     disabled = false,
-                     decimal = false,
-                     refs = () => null,
-                     inputStyle,
-                     wrapperStyle = {},
-                     dark = false,
-                     select = false,
-                     hide = false,
-                     show = true,
+  renderLeftComponent,
+  onChangeText = () => null,
+  onChange = () => null,
+  email = false,
+  numbers = false,
+  phone = false,
+  disabled = false,
+  decimal = false,
+  refs = () => null,
+  inputStyle,
+  wrapperStyle = {},
+  dark = false,
+  select = false,
+  hide = false,
+  show = true,
+  optionTitle,
+  value: _value = '',
+  data = [],
+  error,
+  errorStyle = {},
+  label = '',
+  mb = 14,
+  initialValue = '',
+  labelColor = '#252525',
+  renderRightComponent,
+  hideError = false,
+  secureTextEntry = false,
+  multiline = false,
+  ...otherProps
+}: TextFieldType) => {
+  // All hooks MUST be called before any conditional returns (Rules of Hooks)
+  const [isFocused, setFocused] = useState(false);
+  const [value, setValue] = useState(_value || initialValue);
+  const [isSecureVisible, setSecureVisible] = useState(secureTextEntry);
+  const inputRef = useRef<RNTextInput>(null);
 
-                     optionTitle,
-                     value: _value = '',
-                     data = [],
-                     error,
-                     errorStyle = {},
-                     label = '',
-                     mb = 14,
-                     initialValue = '',
-                     labelColor = '#252525',
-                     renderRightComponent,
-                     hideError = false,
-                     secureTextEntry = false,
-                     multiline = false,
+  // Sync external value changes
+  useEffect(() => {
+    if (_value !== undefined && _value !== value) {
+      setValue(_value);
+    }
+  }, [_value]);
 
-                     ...otherProps
-                   }: TextFieldType) => {
-  let keyboardType = 'default';
+  // Pass ref to parent via refs callback
+  useEffect(() => {
+    if (refs && inputRef.current) {
+      refs(inputRef.current);
+    }
+  }, [refs]);
+
+  // Conditional return AFTER all hooks
+  if (hide || show === false) return null;
+
+  // Determine keyboard type
+  let keyboardType: TextInputProps['keyboardType'] = 'default';
   if (email) keyboardType = 'email-address';
   if (numbers) keyboardType = 'numeric';
   if (decimal) keyboardType = 'decimal-pad';
   if (phone) keyboardType = 'phone-pad';
 
-  if (hide || show === false) return null;
-  const [isFocused, setFocused] = useState(false);
-  const [value, setValue] = useState(_value || initialValue);
-  const [isSecureVisible, setSecureVisible] = useState(secureTextEntry);
+  const handleChangeText = (v: string) => {
+    onChangeText?.(v);
+    onChange?.(v);
+    setValue(v);
+  };
 
-  const inputRef = useRef(null);
-  refs && refs(inputRef && inputRef.current);
+  const toggleSecureVisibility = () => {
+    setSecureVisible(!isSecureVisible);
+  };
 
-  // @ts-ignore
+  // Eye icon for password visibility toggle
+  const EyeIcon = () => (
+    <Touch onPress={toggleSecureVisibility}>
+      <Icon
+        type="Feather"
+        name={isSecureVisible ? 'eye-off' : 'eye'}
+        color="gray"
+        size={scale(16)}
+        fallback={
+          <Text fs={12} color="gray">
+            {isSecureVisible ? 'Show' : 'Hide'}
+          </Text>
+        }
+      />
+    </Touch>
+  );
+
+  // Select component style (ViewStyle compatible)
+  const selectStyle: ViewStyle = {
+    height: 40,
+    flex: 1,
+    paddingHorizontal: 15,
+    ...(disabled ? { backgroundColor: '#84848420' } : {}),
+  };
+
   return (
     <View mb={mb}>
       {label ? (
@@ -119,38 +191,31 @@ const TextField = ({
           {label}
         </Text>
       ) : null}
+
       <View
-        // @ts-ignore eslint-disable-next-line
         style={StyleSheet.flatten([
           styles.inputContainer,
           isFocused && styles.inputContainerActive,
           error && styles.inputContainerError,
-          wrapperStyle && wrapperStyle,
+          wrapperStyle,
         ])}
       >
+        {/* Left component */}
         {renderLeftComponent && (
           <View row aligned style={styles.leftContainer}>
             {renderLeftComponent() as React.ReactNode}
           </View>
         )}
+
+        {/* Select mode or TextInput */}
         {select ? (
-          //@ts-ignore
           <Select
-            style={[
-              styles.input,
-              disabled && styles.disabled,
-              inputStyle && inputStyle,
-            ]}
+            style={selectStyle}
             height={200}
-            optionTitle={optionTitle || 'Select Your Gender'}
+            optionTitle={optionTitle || 'Select an option'}
             items={data}
-            onChange={(v: any) => {
-              onChangeText && onChangeText(v);
-              onChange && onChange(v);
-              setValue(v);
-            }}
+            onChange={handleChangeText}
             value={_value || value}
-            {...otherProps}
           />
         ) : (
           <RNTextInput
@@ -158,30 +223,17 @@ const TextField = ({
             value={_value || value}
             style={[
               styles.input,
-              {
-                // textAlign: rtl ? 'right' : 'left',
-                // writingDirection: rtl ? 'rtl' : 'ltr',
-              },
-
               multiline && styles.textarea,
               disabled && styles.disabled,
-              inputStyle && inputStyle,
+              inputStyle,
             ]}
             autoCapitalize="none"
-            keyboardType={keyboardType as any}
+            keyboardType={keyboardType}
             onFocus={() => setFocused(true)}
             onEndEditing={() => setFocused(false)}
-            ref={(ref) => {
-              //@ts-ignore
-              inputRef.current = ref;
-            }}
-            onChangeText={(v) => {
-              onChangeText && onChangeText(v);
-              onChange && onChange(v);
-              setValue(v);
-            }}
-            //@ts-ignore
-            disabled={disabled as any}
+            onBlur={() => setFocused(false)}
+            ref={inputRef}
+            onChangeText={handleChangeText}
             placeholderTextColor={'#374955'}
             editable={!disabled}
             underlineColorAndroid="transparent"
@@ -190,11 +242,12 @@ const TextField = ({
             {...otherProps}
           />
         )}
+
+        {/* Right component with optional secure text toggle */}
         {renderRightComponent && (
           <View
             row
             aligned
-            // @ts-ignore eslint-disable-next-line
             style={StyleSheet.flatten([
               styles.rightContainer,
               isFocused && styles.rightContainerActive,
@@ -202,36 +255,32 @@ const TextField = ({
             ])}
           >
             {secureTextEntry && (
-              <Touch mr={8} onPress={() => setSecureVisible(!isSecureVisible)}>
-                <Feather
-                  color={'gray'}
-                  size={scale(12)}
-                  name={isSecureVisible ? 'eye' : 'eye-off'}
-                />
-              </Touch>
+              <View mr={8}>
+                <EyeIcon />
+              </View>
             )}
             {renderRightComponent() as React.ReactNode}
           </View>
         )}
 
+        {/* Secure text toggle when no right component */}
         {!renderRightComponent && secureTextEntry && (
           <View style={styles.rightContainer}>
-            <Touch onPress={() => setSecureVisible(!isSecureVisible)}>
-              <Feather
-                name={isSecureVisible ? 'eye-off' : 'eye'}
-                color={'gray'}
-                size={scale(12)}
-              />
-            </Touch>
+            <EyeIcon />
           </View>
         )}
       </View>
-      <View hide={!(!hideError && error)} p={1}>
-        <Text danger mt={5} fs={10} style={errorStyle || undefined}>
-          {error}
-        </Text>
-      </View>
+
+      {/* Error message */}
+      {!hideError && error && (
+        <View p={1}>
+          <Text danger mt={5} fs={10} style={errorStyle || undefined}>
+            {error}
+          </Text>
+        </View>
+      )}
     </View>
   );
 };
+
 export default TextField;

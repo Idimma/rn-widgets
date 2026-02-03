@@ -1,14 +1,18 @@
-import React, { useRef, useState } from 'react';
-
-import Icon from '@expo/vector-icons/MaterialCommunityIcons';
-import PropTypes from 'prop-types';
+import React, { useRef, useState, useEffect, ReactNode } from 'react';
+import { StyleSheet, ViewStyle } from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { StyleSheet } from 'react-native';
-import { default as Text } from './Text';
+import Text from './Text';
 import Touch from './Touch';
 import View from './View';
-import { scale } from 'react-native-size-matters';
+import Icon from './Icon';
 import { DHR, THEME_COLORS } from '../helper';
+import { tryRequire } from '../helper/platform';
+
+// Optional: react-native-size-matters for responsive scaling
+const SizeMatters = tryRequire<{ scale: (size: number) => number }>('react-native-size-matters');
+const scale = SizeMatters.available && SizeMatters.module
+  ? SizeMatters.module.scale
+  : (size: number) => size;
 
 const styles = StyleSheet.create({
   container: {
@@ -39,7 +43,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const DefaultOption = ({ label, value, onPress }) => {
+interface DefaultOptionProps {
+  label: string;
+  value: any;
+  onPress: (label: string) => void;
+}
+
+const DefaultOption = ({ label, value, onPress }: DefaultOptionProps) => {
   const isSelected = label === value;
   return (
     <Touch
@@ -51,7 +61,31 @@ const DefaultOption = ({ label, value, onPress }) => {
   );
 };
 
+interface RenderTouchableParams {
+  onPress: () => void;
+  value: any;
+}
+
+interface RenderOptionParams {
+  items: any[];
+  onPress: (value: any) => void;
+  value: any;
+}
+
+interface SelectProps {
+  style?: ViewStyle;
+  value: any;
+  items: any[];
+  renderContentHeader?: () => ReactNode;
+  optionTitle?: ReactNode;
+  renderTouchable?: (params: RenderTouchableParams) => ReactNode;
+  onChange?: (value: any) => void;
+  renderOption?: (params: RenderOptionParams) => ReactNode;
+  height?: number;
+}
+
 const customStyle = { container: { backgroundColor: 'transparent' } };
+
 const Select = ({
   style,
   value,
@@ -61,23 +95,24 @@ const Select = ({
   renderTouchable,
   onChange,
   renderOption,
+  height = DHR(30),
   ...otherProps
-}) => {
-  const sheetRef = useRef(null);
+}: SelectProps) => {
+  const sheetRef = useRef<any>(null);
   const [selectedValue, setSelectedValue] = useState(value);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (selectedValue !== value) {
-      onChange && onChange(selectedValue);
+      onChange?.(selectedValue);
       sheetRef?.current?.close();
     }
-  }, [selectedValue]);
+  }, [selectedValue, value, onChange]);
 
   return (
     <View style={style}>
       {renderTouchable &&
         renderTouchable({
-          onPress: () => sheetRef.current.open(),
+          onPress: () => sheetRef.current?.open(),
           value: selectedValue,
         })}
       {!renderTouchable && (
@@ -87,21 +122,27 @@ const Select = ({
           spaced
           h={'100%'}
           aligned
-          onPress={() => sheetRef.current.open()}
+          onPress={() => sheetRef.current?.open()}
         >
           <Text flex gray>
             {value}
           </Text>
-          <Icon name="chevron-down" size={scale(17)} color={'gray'} />
+          <Icon
+            type="materialcommunityicons"
+            name="chevron-down"
+            size={scale(17)}
+            color={'gray'}
+          />
         </Touch>
       )}
       <RBSheet
         customStyles={customStyle}
         closeOnDragDown={false}
         ref={sheetRef}
+        height={height}
         {...otherProps}
       >
-        {renderContentHeader && renderContentHeader()}
+        {renderContentHeader?.()}
         <View flex>
           <View scroll>
             {optionTitle && <Text>{optionTitle}</Text>}
@@ -112,7 +153,7 @@ const Select = ({
                     onPress: setSelectedValue,
                     value: selectedValue,
                   })
-                : items.map((option, i) => (
+                : items.map((option) => (
                     <DefaultOption
                       key={option}
                       label={option}
@@ -126,28 +167,6 @@ const Select = ({
       </RBSheet>
     </View>
   );
-};
-
-Select.propTypes = {
-  value: PropTypes.any.isRequired,
-  items: PropTypes.array.isRequired,
-  renderContentHeader: PropTypes.func,
-  renderOption: PropTypes.func,
-  optionTitle: PropTypes.any,
-};
-
-Select.defaultProps = {
-  renderContentHeader: null,
-  renderTouchable: null,
-  renderOption: null,
-  height: DHR(30),
-  optionTitle: null,
-};
-
-DefaultOption.propTypes = {
-  value: PropTypes.any.isRequired,
-  label: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
 };
 
 export default Select;

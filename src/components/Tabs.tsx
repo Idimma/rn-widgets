@@ -2,7 +2,13 @@ import React, { useState, ReactElement } from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import Text from './Text';
-import { scale } from 'react-native-size-matters';
+import { tryRequire } from '../helper/platform';
+
+// Optional: react-native-size-matters for responsive scaling
+const SizeMatters = tryRequire<{ scale: (size: number) => number }>('react-native-size-matters');
+const scale = SizeMatters.available && SizeMatters.module
+  ? SizeMatters.module.scale
+  : (size: number) => size;
 
 // Define interface for tab child props
 interface TabChildProps {

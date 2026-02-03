@@ -5,6 +5,7 @@
     "paths": {
       "@idimma/widget": ["./lib/typescript"]
     },
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "allowUnreachableCode": true,
     "allowUnusedLabels": true,
     "esModuleInterop": true,

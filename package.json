@@ -1,7 +1,7 @@
 {
   "name": "@idimma/rn-widget",
-  "version": "0.1.7",
-  "description": "React Native components",
+  "version": "0.2.0",
+  "description": "React Native UI components - works with Expo and bare React Native",
   "main": "lib/module",
   "module": "lib/module",
   "types": "lib/typescript/src/index.d.ts",
@@ -43,12 +43,14 @@
     "clean": "del-cli lib",
     "prepare": "bob build",
     "release": "release-it",
-    "postinstall": "echo \"Warning: Support for Expo SDK 52 may be deprecated in future versions. Consider upgrading to SDK 53.\"",
     "ci": "npm run lint && npm run typecheck && npm test",
     "prebuild-check": "npx expo prebuild --no-install --platform all"
   },
   "keywords": [
     "react-native",
+    "expo",
+    "ui-components",
+    "bare-rn",
     "ios",
     "android"
   ],
@@ -66,11 +68,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "react-native-animatable": "1.4.0",
-    "react-native-lightbox-v2": "0.9.0",
-    "react-native-raw-bottom-sheet": "3.0.0",
-    "react-native-safe-area-context": "4.8.2 || 4.11.0",
-    "react-native-size-matters": "0.4.2"
+    "react-native-raw-bottom-sheet": "3.0.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "19.5.0",
@@ -78,7 +76,6 @@
     "@react-native/eslint-config": "0.74.83",
     "@release-it/conventional-changelog": "^10.0.1",
     "@types/jest": "29.5.13",
-    "@types/lodash": "4.17.10",
     "@types/react": "19.0.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
@@ -90,52 +87,57 @@
     "eslint-plugin-react": "7.37.1",
     "jest": "29.7.0",
     "jest-expo": "51.0.0",
-    "lodash": "4.17.21",
     "prettier": "3.3.3",
     "react-native-builder-bob": "0.21.0",
     "react-native-typescript-transformer": "^1.2.10",
     "release-it": "^19.0.1",
     "typescript": "5.6.2"
   },
-  "resolutions": {
-    "@types/react": "19.0.0",
-    "@types/react-native": "0.79.0",
-    "@types/react-native-safe-area-context": "4.3.0",
-    "@types/react-native-gesture-handler": "2.5.0",
-    "@types/react-native-reanimated": "3.1.0",
-    "@types/jest": "29.5.13",
-    "@types/lodash": "4.17.10",
-    "@typescript-eslint/eslint-plugin": "5.62.0",
-    "@typescript-eslint/parser": "5.62.0"
-  },
   "peerDependencies": {
-    "@expo/vector-icons": "*",
-    "expo-haptics": "*",
-    "expo-image": "*",
-    "expo-linear-gradient": "*",
     "react": ">=18.0.0 <20.0.0",
-    "react-native": ">=0.74.0 <0.81.0",
-    "react-native-gesture-handler": "*",
-    "react-native-reanimated": "*",
-    "react-native-safe-area-context": "*"
+    "react-native": ">=0.74.0"
   },
   "peerDependenciesMeta": {
-    "react-native-gesture-handler": {
-      "optional": true
-    },
-    "react-native-reanimated": {
+    "react-native-safe-area-context": {
       "optional": true
     },
     "@expo/vector-icons": {
       "optional": true
     },
+    "react-native-vector-icons": {
+      "optional": true
+    },
     "expo-haptics": {
+      "optional": true
+    },
+    "react-native-haptic-feedback": {
       "optional": true
     },
     "expo-image": {
       "optional": true
     },
+    "react-native-fast-image": {
+      "optional": true
+    },
     "expo-linear-gradient": {
+      "optional": true
+    },
+    "react-native-linear-gradient": {
+      "optional": true
+    },
+    "react-native-animatable": {
+      "optional": true
+    },
+    "react-native-lightbox-v2": {
+      "optional": true
+    },
+    "react-native-size-matters": {
+      "optional": true
+    },
+    "react-native-gesture-handler": {
+      "optional": true
+    },
+    "react-native-reanimated": {
       "optional": true
     }
   },
@@ -212,7 +214,6 @@
     "source": "src",
     "output": "lib",
     "targets": [
-      "commonjs",
       "module",
       "typescript"
     ]

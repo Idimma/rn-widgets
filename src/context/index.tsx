@@ -1,77 +1,131 @@
 import React, { createContext, useContext } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { DarkTheme, FontFamily, LightTheme, Shadow, ThemeColorsType } from '../helper/@types';
 import { fontFamily, lightTheme, darkTheme, shadow, THEME_COLORS } from '../helper';
+import { tryRequire } from '../helper/platform';
 
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StyleSheet } from 'react-native';
+// SafeAreaProvider is optional
+const SafeAreaModule = tryRequire<typeof import('react-native-safe-area-context')>(
+  'react-native-safe-area-context'
+);
 
 interface RnStyleProps {
-  fontFamily?: FontFamily,
+  fontFamily?: FontFamily;
   shadow?: Shadow;
-  theme?: 'dark' | 'light' | undefined
+  theme?: 'dark' | 'light';
   lightTheme?: LightTheme | ThemeColorsType;
   darkTheme?: DarkTheme | ThemeColorsType;
-  setTheme?: (theme: 'dark' | 'light' | undefined) => void
+  setTheme?: (theme: 'dark' | 'light') => void;
 }
-
-// type RnStylePropValue<T extends keyof RnStyleProps> = RnStyleProps[T];
 
 interface IRnWidgetsProps extends RnStyleProps {
   children: React.ReactElement;
+  /** Disable SafeAreaProvider wrapper (for custom setup or when already wrapped) */
+  disableSafeArea?: boolean;
 }
 
-const RnWidgetContext: React.Context<RnStyleProps> = createContext({} as RnStyleProps);
+const RnWidgetContext = createContext<RnStyleProps>({});
 
-const styleSafeAreaProvider = StyleSheet.flatten({flex:1})
+const styleSafeAreaProvider = StyleSheet.flatten({ flex: 1 });
 
-const RnWidgetContextProvider =
-  ({
-     children,
-     fontFamily,
-     lightTheme,
-     darkTheme,
-     shadow,
-     theme = 'light',
-   }: IRnWidgetsProps) => {
-    return (
-      <SafeAreaProvider style={styleSafeAreaProvider}>
-        <RnWidgetContext.Provider value={{
-          fontFamily,
-          shadow,
-          theme,
-          lightTheme,
-          darkTheme,
-        }}>
-          {children}
-        </RnWidgetContext.Provider>
-      </SafeAreaProvider>
-    );
+/**
+ * Widget Provider - Provides theme and styling context to all widgets
+ *
+ * @example
+ * // Basic usage
+ * <WidgetProvider>
+ *   <App />
+ * </WidgetProvider>
+ *
+ * @example
+ * // With custom theme
+ * <WidgetProvider
+ *   theme="dark"
+ *   lightTheme={{ primary: '#007AFF', secondary: '#5856D6' }}
+ *   darkTheme={{ primary: '#0A84FF', secondary: '#5E5CE6' }}
+ * >
+ *   <App />
+ * </WidgetProvider>
+ *
+ * @example
+ * // Without SafeAreaProvider (when you have your own)
+ * <WidgetProvider disableSafeArea>
+ *   <App />
+ * </WidgetProvider>
+ */
+const RnWidgetContextProvider = ({
+  children,
+  fontFamily: customFontFamily,
+  lightTheme: customLightTheme,
+  darkTheme: customDarkTheme,
+  shadow: customShadow,
+  theme = 'light',
+  disableSafeArea = false,
+}: IRnWidgetsProps) => {
+  const contextValue: RnStyleProps = {
+    fontFamily: customFontFamily,
+    shadow: customShadow,
+    theme,
+    lightTheme: customLightTheme,
+    darkTheme: customDarkTheme,
   };
 
+  const content = (
+    <RnWidgetContext.Provider value={contextValue}>{children}</RnWidgetContext.Provider>
+  );
 
-type RnStylePropValue<T extends keyof Omit<RnStyleProps, 'colors'>> = RnStyleProps[T];
-//_default:RnStyleProps[keyof RnStyleProps],
+  // Use SafeAreaProvider if available and not disabled
+  if (!disableSafeArea && SafeAreaModule.available && SafeAreaModule.module) {
+    const { SafeAreaProvider } = SafeAreaModule.module;
+    return <SafeAreaProvider style={styleSafeAreaProvider}>{content}</SafeAreaProvider>;
+  }
+
+  // Fallback: simple View wrapper
+  return <View style={styleSafeAreaProvider}>{content}</View>;
+};
+
+/**
+ * Hook to access widget context values
+ *
+ * @param props - The property to retrieve: 'colors', 'fontFamily', or 'shadow'
+ * @returns The requested theme property with defaults merged
+ *
+ * @example
+ * const colors = useRnWidgetContext('colors');
+ * const fonts = useRnWidgetContext('fontFamily');
+ */
 export const useRnWidgetContext = <T extends keyof RnStyleProps | 'colors'>(
-  props: 'colors' | 'fontFamily' | 'shadow',
-): RnStylePropValue<Exclude<T, 'colors'>> | Shadow | FontFamily | ThemeColorsType => {
+  props: 'colors' | 'fontFamily' | 'shadow'
+): T extends 'colors' ? ThemeColorsType : T extends 'fontFamily' ? FontFamily : Shadow => {
+  let context: RnStyleProps | null = null;
 
-  let context;
   try {
     context = useContext(RnWidgetContext);
   } catch (e) {
-    context = null;
-    console.warn('RnWidget is not within a Provider');
+    // Context not available (used outside provider)
+    // @ts-ignore - __DEV__ is a React Native global
+    if (typeof __DEV__ !== 'undefined' && __DEV__) {
+      console.warn('[rn-widgets] useRnWidgetContext used outside WidgetProvider');
+    }
   }
-  if (props === 'colors' && context) {
-    const res = context.theme === 'dark' ? context.darkTheme : context.lightTheme;
-    const _defaults = (context.theme === 'dark' ? darkTheme : lightTheme) as object;
-    return { ...THEME_COLORS, ..._defaults, ...res } as RnStylePropValue<Exclude<T, 'colors'>>;
-  }
-  const res = context ? context[props as keyof RnStyleProps] || {} : {};
-  if (props === 'shadow') return { ...shadow, ...res } as Shadow;
-  return { ...fontFamily, ...res } as FontFamily;
 
+  if (props === 'colors') {
+    if (context && Object.keys(context).length > 0) {
+      const themeColors = context.theme === 'dark' ? context.darkTheme : context.lightTheme;
+      const defaults = context.theme === 'dark' ? darkTheme : lightTheme;
+      return { ...THEME_COLORS, ...defaults, ...themeColors } as any;
+    }
+    return THEME_COLORS as any;
+  }
+
+  if (props === 'shadow') {
+    const contextShadow = context?.shadow || {};
+    return { ...shadow, ...contextShadow } as any;
+  }
+
+  // fontFamily
+  const contextFontFamily = context?.fontFamily || {};
+  return { ...fontFamily, ...contextFontFamily } as any;
 };
-
 
 export default RnWidgetContextProvider;
