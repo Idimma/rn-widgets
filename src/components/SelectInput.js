@@ -6,6 +6,7 @@ import { default as Text } from './Text';
 import { default as View } from './View';
 import { moderateVerticalScale } from 'react-native-size-matters';
 import { IS_IOS, THEME_COLORS } from '../helper';
+import { useRnWidgetContext } from '../context';
 
 const pickerStyle = {
   inputAndroid: {
@@ -49,13 +50,14 @@ const SelectInput = ({
   style,
   ...otherProps
 }) => {
+  const colors = useRnWidgetContext('colors');
   return (
     <>
       <View
         w={width}
         style={[
           styles.inputContainer,
-          error && styles.inputContainerError,
+          error && { borderColor: colors.danger },
           inputContainer,
         ]}
       >
@@ -70,7 +72,7 @@ const SelectInput = ({
               <Icon
                 fs={18}
                 m={10}
-                color={THEME_COLORS.gray}
+                color={colors.gray}
                 name="chevron-down-outline"
               />
             ) : null
@@ -95,7 +97,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
   },
   inputContainerError: {
-    borderColor: THEME_COLORS.danger,
+    borderColor: 'red',
   },
 });
 

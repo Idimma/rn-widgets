@@ -3,6 +3,7 @@ import {
   ColorValue,
   Pressable,
   PressableProps,
+  StyleProp,
   ViewStyle,
   GestureResponderEvent,
 } from 'react-native';
@@ -10,8 +11,8 @@ import React from 'react';
 import View from './View';
 import { viewStyler } from '../helper/styles.view';
 import { tryRequire, warnMissingDependency } from '../helper/platform';
-import { THEME_COLORS } from '../helper';
-import { IViewProps } from '../helper/@types';
+import { useRnWidgetContext } from '../context';
+import { IViewProps, ThemeColorsType } from '../helper/@types';
 
 // Try expo-haptics first, then react-native-haptic-feedback
 const ExpoHaptics = tryRequire<typeof import('expo-haptics')>('expo-haptics');
@@ -121,7 +122,8 @@ const Touch = ({
   onPress: onClick,
   style,
   ...props
-}: { style?: ViewStyle } & ITouch & PressableProps & IViewProps) => {
+}: { style?: StyleProp<ViewStyle> } & ITouch & PressableProps & IViewProps) => {
+  const colors = useRnWidgetContext('colors') as ThemeColorsType;
   if (hide || show === false) return null;
 
   // Loading state
@@ -131,7 +133,7 @@ const Touch = ({
         <ActivityIndicator
           animating
           size={'small'}
-          color={loadingColor || THEME_COLORS.primary}
+          color={loadingColor || colors.primary}
         />
       </View>
     );

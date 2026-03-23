@@ -1,0 +1,23 @@
+fix: use WidgetProvider theme colors across all components
+
+BREAKING CHANGE: Spinner converted from class to functional component.
+
+All components were importing the static THEME_COLORS constant
+from helper/index.ts. This constant is evaluated once at module
+load time, so custom colors from WidgetProvider were ignored.
+
+Components now call useRnWidgetContext('colors') at render time
+to read merged theme colors from the provider context.
+
+Files changed:
+- TextField.tsx: focus/error borders use context colors
+- Button.tsx: default wrapperStyle uses context primary
+- Empty.tsx: ActivityIndicator uses context primary
+- Select.tsx: selected option border uses context orange
+- SelectInput.js: error border and icon use context colors
+- Spinner.tsx: converted to functional component with hook
+- Touch.tsx: loading indicator uses context primary
+- View.tsx: gradient defaults use context primary/secondary
+- styles.view.ts: style param accepts StyleProp<ViewStyle>
+
+Version bumped to 0.2.1 and published to npm.

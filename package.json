@@ -1,6 +1,6 @@
 {
   "name": "@idimma/rn-widget",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React Native UI components - works with Expo and bare React Native",
   "main": "lib/module",
   "module": "lib/module",

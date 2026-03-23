@@ -8,6 +8,8 @@ import Touch from './Touch';
 import View from './View';
 import { TextFieldType } from '../helper/@types';
 import { THEME_COLORS } from '../helper';
+import { useRnWidgetContext } from '../context';
+import { ThemeColorsType } from '../helper/@types';
 import { tryRequire } from '../helper/platform';
 
 // Optional: react-native-size-matters for responsive scaling
@@ -37,18 +39,6 @@ const styles = StyleSheet.create({
   disabled: {
     color: THEME_COLORS.gray,
     backgroundColor: '#84848420',
-  },
-  inputContainerActive: {
-    borderColor: THEME_COLORS.primary,
-  },
-  rightContainerActive: {
-    borderColor: THEME_COLORS.primary,
-  },
-  inputContainerError: {
-    borderColor: THEME_COLORS.danger,
-  },
-  rightContainerError: {
-    borderColor: THEME_COLORS.danger,
   },
   rightContainer: {
     paddingHorizontal: 10,
@@ -124,6 +114,7 @@ const TextField = ({
   const [value, setValue] = useState(_value || initialValue);
   const [isSecureVisible, setSecureVisible] = useState(secureTextEntry);
   const inputRef = useRef<RNTextInput>(null);
+  const colors = useRnWidgetContext('colors') as ThemeColorsType;
 
   // Sync external value changes
   useEffect(() => {
@@ -195,8 +186,8 @@ const TextField = ({
       <View
         style={StyleSheet.flatten([
           styles.inputContainer,
-          isFocused && styles.inputContainerActive,
-          error && styles.inputContainerError,
+          isFocused && { borderColor: colors.primary },
+          error && { borderColor: colors.danger },
           wrapperStyle,
         ])}
       >
@@ -250,8 +241,8 @@ const TextField = ({
             aligned
             style={StyleSheet.flatten([
               styles.rightContainer,
-              isFocused && styles.rightContainerActive,
-              error && styles.rightContainerError,
+              isFocused && { borderColor: colors.primary },
+              error && { borderColor: colors.danger },
             ])}
           >
             {secureTextEntry && (

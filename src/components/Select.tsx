@@ -6,6 +6,8 @@ import Touch from './Touch';
 import View from './View';
 import Icon from './Icon';
 import { DHR, THEME_COLORS } from '../helper';
+import { useRnWidgetContext } from '../context';
+import { ThemeColorsType } from '../helper/@types';
 import { tryRequire } from '../helper/platform';
 
 // Optional: react-native-size-matters for responsive scaling
@@ -37,10 +39,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray',
   },
-  selected: {
-    borderColor: THEME_COLORS.orange,
-    backgroundColor: 'white',
-  },
 });
 
 interface DefaultOptionProps {
@@ -50,10 +48,14 @@ interface DefaultOptionProps {
 }
 
 const DefaultOption = ({ label, value, onPress }: DefaultOptionProps) => {
+  const colors = useRnWidgetContext('colors') as ThemeColorsType;
   const isSelected = label === value;
   return (
     <Touch
-      style={StyleSheet.flatten([styles.option, isSelected && styles.selected])}
+      style={StyleSheet.flatten([
+        styles.option,
+        isSelected && { borderColor: colors.orange, backgroundColor: 'white' },
+      ])}
       onPress={() => onPress(label)}
     >
       <Text orange={isSelected}>{label}</Text>

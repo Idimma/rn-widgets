@@ -4,7 +4,8 @@ import Text from './Text';
 import Touch from './Touch';
 import View from './View';
 import Icon from './Icon';
-import { THEME_COLORS } from '../helper';
+import { useRnWidgetContext } from '../context';
+import { ThemeColorsType } from '../helper/@types';
 
 const styles = StyleSheet.create({
   container: {
@@ -40,12 +41,14 @@ const Empty = ({
                    name: 'list-ol',
                    fs: 70,
                  },
-               }: EmptyProps) => (
+               }: EmptyProps) => {
+  const colors = useRnWidgetContext('colors') as ThemeColorsType;
+  return (
   <View style={StyleSheet.flatten([styles.container, wrapperStyle])}>
     <Icon {...iconProps} />
 
     {text ? <Text bold mb={10}>{text}</Text> : null}
-    {showEmptyLoader && <ActivityIndicator color={THEME_COLORS.primary} />}
+    {showEmptyLoader && <ActivityIndicator color={colors.primary} />}
 
     {onRefresh && (
       <Touch primary h={48} central onPress={onRefresh} radius={10} mt={10}>
@@ -53,6 +56,7 @@ const Empty = ({
       </Touch>
     )}
   </View>
-);
+  );
+};
 
 export default Empty;

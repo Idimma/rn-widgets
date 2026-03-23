@@ -1,7 +1,7 @@
 import { ActivityIndicator, Text, TextStyle, View } from 'react-native';
-import React, { Component } from 'react';
-import { THEME_COLORS } from '../helper';
-import { IViewProps } from '../helper/@types';
+import React from 'react';
+import { useRnWidgetContext } from '../context';
+import { IViewProps, ThemeColorsType } from '../helper/@types';
 
 interface ISpinner {
   center: boolean;
@@ -12,22 +12,20 @@ interface ISpinner {
   textStyle: TextStyle;
 }
 
-class Spinner extends Component<ISpinner & IViewProps> {
-  render() {
-    const { text, textStyle, color, large, ...props } = this.props;
-    return (
-      <View {...props}>
-        <ActivityIndicator
-          animating
-          color={color || THEME_COLORS.primary}
-          size={large ? 'large' : 'small'}
-        />
-        {text ? (
-          <Text style={textStyle}>{text || 'Please Wait...'}</Text>
-        ) : null}
-      </View>
-    );
-  }
-}
+const Spinner = ({ text, textStyle, color, large, ...props }: ISpinner & IViewProps) => {
+  const colors = useRnWidgetContext('colors') as ThemeColorsType;
+  return (
+    <View {...props}>
+      <ActivityIndicator
+        animating
+        color={color || colors.primary}
+        size={large ? 'large' : 'small'}
+      />
+      {text ? (
+        <Text style={textStyle}>{text || 'Please Wait...'}</Text>
+      ) : null}
+    </View>
+  );
+};
 
 export default Spinner;

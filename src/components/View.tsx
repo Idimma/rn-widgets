@@ -9,7 +9,8 @@ import {
   ViewProps,
 } from 'react-native';
 import React, { forwardRef, LegacyRef } from 'react';
-import { THEME_COLORS } from '../helper';
+import { useRnWidgetContext } from '../context';
+import { ThemeColorsType } from '../helper/@types';
 import { IViewProps, IViewStyleProp } from '../helper/@types';
 import { tryRequire, warnMissingDependency } from '../helper/platform';
 
@@ -133,7 +134,7 @@ const View = forwardRef<RNView, IView>(
       useNativeDriver = true,
       show,
       gradient,
-      gradientColors = [THEME_COLORS.primary, THEME_COLORS.secondary],
+      gradientColors: gradientColorsProp,
       easing = 'ease-out',
       iterationCount = 1,
       duration,
@@ -143,6 +144,8 @@ const View = forwardRef<RNView, IView>(
     }: IView,
     ref: any
   ) => {
+    const themeColors = useRnWidgetContext('colors') as ThemeColorsType;
+    const gradientColors = gradientColorsProp || [themeColors.primary, themeColors.secondary];
     if (hide || show === false) return <RNView />;
 
     const fixedProp = { ...props };

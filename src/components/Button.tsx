@@ -1,7 +1,8 @@
 import React from 'react';
 import { default as Text } from './Text';
 import { default as Touch } from './Touch';
-import { THEME_COLORS } from '../helper';
+import { useRnWidgetContext } from '../context';
+import { ThemeColorsType } from '../helper/@types';
 
 const Button = ({
   onPress,
@@ -10,10 +11,12 @@ const Button = ({
   children,
   style,
   c,
-  wrapperStyle = { borderRadius: 50, borderWidth: 2, borderColor: THEME_COLORS.primary },
+  wrapperStyle: wrapperStyleProp,
   title,
   ...props
 }: any) => {
+  const colors = useRnWidgetContext('colors') as ThemeColorsType;
+  const wrapperStyle = wrapperStyleProp ?? { borderRadius: 50, borderWidth: 2, borderColor: colors.primary };
   const btnSty = [style];
   if (c)
     btnSty.push({
@@ -35,6 +38,7 @@ const Button = ({
         mb={20}
         gradient
         outline
+        style={wrapperStyle}
         {...props}
       >
         {title ? (

@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
 import { DHR, DWR, IS_IOS } from './index';
 import { IViewStyleProp, Shadow, ThemeColorsType } from './@types';
 import { useRnWidgetContext } from '../context';
@@ -53,7 +53,7 @@ type ViewStyleMapKeys = keyof typeof VIEW_STYLE_MAP;
 
 export const viewStyler = (
   props: IViewStyleProp,
-  custom?: ViewStyle
+  custom?: StyleProp<ViewStyle>
 ) => {
   const THEME_COLORS = useRnWidgetContext('colors') as ThemeColorsType;
   const SHADOWS = useRnWidgetContext('shadow') as Shadow;
