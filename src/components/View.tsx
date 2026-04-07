@@ -4,6 +4,7 @@ import {
   ScrollView,
   ScrollViewProps,
   StyleSheet,
+  StyleProp,
   View as RNView,
   ViewStyle,
   ViewProps,
@@ -75,7 +76,7 @@ interface IView extends IViewProps, IViewStyleProp, ViewProps {
   gradientColors?: string[];
   gradientProps?: any;
   infinite?: boolean | number;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle> | undefined;
 }
 
 /**

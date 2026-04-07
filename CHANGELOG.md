@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-04-06
+
+### Fixed
+- Fixed `View` component `style` prop type from `ViewStyle` to `StyleProp<ViewStyle>` to support style arrays, registered styles, and conditional styles
+
 ## [0.1.7] - 2025-08-03
 
 ### Fixed
